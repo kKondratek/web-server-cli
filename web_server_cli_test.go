@@ -40,3 +40,5 @@ func TestValidatePath(t *testing.T) {
 		t.Fail()
 	}
 }
+
+// TODO: Write more tests!!!
