@@ -22,9 +22,10 @@ func main() {
 		Version: version,
 		Commands: []*cli.Command{
 			{
-				Name:    "run",
-				Aliases: []string{"r"},
-				Usage:   "Run local http server",
+				Name:      "run",
+				Aliases:   []string{"r"},
+				Usage:     "Run local http server",
+				UsageText: "web_server_cli run --file [path to index.html]",
 				Action: func(c *cli.Context) error {
 					var filepath string = c.String("file")
 					filepath, err := validatePath(filepath)
