@@ -2,11 +2,17 @@
 Simple CLI application to run local web server
 ## How to use
 ### Run
-`$ go run web-server-cli.go [commands]`
+```
+$ go run web-server-cli.go [commands]
+```
 ### Build and run
-`$ go build`
+```
+$ go build
+```
 
-`$ ./web-server-cli [commands]`
+```
+$ ./web-server-cli [commands]
+```
 ### Commands
 ```
 run, r      Run local http server
@@ -16,6 +22,10 @@ version, v  Print the version
 help, h     Shows a list of commands or help for one command
 ```
 ### Run tests
-`$ go test`
+```
+$ go test
+```
 ### Try with sample
-`$ web-server-cli run --file ./sample/index.html`
+```
+$ web-server-cli run --file ./sample/index.html
+```
