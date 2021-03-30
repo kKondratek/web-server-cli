@@ -14,17 +14,22 @@ import (
 
 func main() {
 
+	const version = "0.1.0"
+
 	app := &cli.App{
-		// TODO: main command
+		Name:    "web-server-cli",
+		Usage:   "Simple CLI application to run local web server",
+		Version: version,
 		Commands: []*cli.Command{
 			{
-				Name:  "run",
-				Usage: "Run local http server",
+				Name:    "run",
+				Aliases: []string{"r"},
+				Usage:   "Run local http server",
 				Action: func(c *cli.Context) error {
 					var filepath string = c.String("file")
-					fmt.Printf("Filepath %q\n", filepath)
-					filepath = getPath(filepath)
+					filepath = validatePath(filepath)
 
+					fmt.Println("Starting server on http://localhost:4000")
 					http.Handle("/", http.FileServer(http.Dir(filepath)))
 					http.ListenAndServe(":4000", nil)
 
@@ -34,17 +39,18 @@ func main() {
 					&cli.StringFlag{
 						Name:     "file",
 						Aliases:  []string{"f"},
-						Usage:    "Specify index.html file",
+						Usage:    "specify location of index.html file",
 						Required: true,
 					},
 					// TODO: --port flag
 				},
 			},
 			{
-				Name:    "add",
-				Aliases: []string{"a"},
-				Usage:   "add a task to the list",
+				Name:    "version",
+				Aliases: []string{"v"},
+				Usage:   "Print the version",
 				Action: func(c *cli.Context) error {
+					fmt.Println("web-server-cli version " + version)
 					return nil
 				},
 			},
@@ -58,7 +64,7 @@ func main() {
 }
 
 // checks if index.html exists and returns its path
-func getPath(path string) string {
+func validatePath(path string) string {
 	var resultPath string
 
 	// checks if provided path contains index.html
@@ -79,7 +85,6 @@ func getPath(path string) string {
 			log.Fatal("index.html not found")
 		}
 	}
-	fmt.Println(resultPath)
 	return resultPath
 }
 
