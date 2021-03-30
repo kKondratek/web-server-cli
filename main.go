@@ -5,6 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
+	"runtime"
+	"strings"
 
 	"github.com/urfave/cli/v2"
 )
@@ -20,6 +23,7 @@ func main() {
 				Action: func(c *cli.Context) error {
 					var filepath string = c.String("file")
 					fmt.Printf("Filepath %q\n", filepath)
+					filepath = getPath(filepath)
 
 					http.Handle("/", http.FileServer(http.Dir(filepath)))
 					http.ListenAndServe(":4000", nil)
@@ -53,6 +57,33 @@ func main() {
 	}
 }
 
-func getPath() {
-	// TODO: validate --file arg and return proper filepath
+// checks if index.html exists and returns its path
+func getPath(path string) string {
+	var resultPath string
+
+	// checks if provided path contains index.html
+	pathWithFile, _ := regexp.Compile("(.*)index.html")
+	if pathWithFile.MatchString(path) {
+		resultPath = strings.TrimSuffix(path, "index.html")
+	} else {
+		resultPath = path
+		if isWindows() {
+			path += "\\index.html"
+		} else {
+			path += "/index.html"
+		}
+
+		// checks if index.html exsists in given path
+		_, err := os.Stat(path)
+		if os.IsNotExist(err) {
+			log.Fatal("index.html not found")
+		}
+	}
+	fmt.Println(resultPath)
+	return resultPath
+}
+
+// checks if program is running on Windows os
+func isWindows() bool {
+	return runtime.GOOS == "windows"
 }
