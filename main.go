@@ -27,7 +27,11 @@ func main() {
 				Usage:   "Run local http server",
 				Action: func(c *cli.Context) error {
 					var filepath string = c.String("file")
-					filepath = validatePath(filepath)
+					filepath, err := validatePath(filepath)
+
+					if err != nil {
+						log.Fatal("index.html not found in given path")
+					}
 
 					fmt.Println("Starting server on http://localhost:4000")
 					http.Handle("/", http.FileServer(http.Dir(filepath)))
@@ -64,7 +68,7 @@ func main() {
 }
 
 // checks if index.html exists and returns its path
-func validatePath(path string) string {
+func validatePath(path string) (string, error) {
 	var resultPath string
 
 	// checks if provided path contains index.html
@@ -78,14 +82,14 @@ func validatePath(path string) string {
 		} else {
 			path += "/index.html"
 		}
-
-		// checks if index.html exsists in given path
-		_, err := os.Stat(path)
-		if os.IsNotExist(err) {
-			log.Fatal("index.html not found")
-		}
 	}
-	return resultPath
+	// checks if index.html exsists in given path
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return "", err
+	}
+
+	return resultPath, nil
 }
 
 // checks if program is running on Windows os
